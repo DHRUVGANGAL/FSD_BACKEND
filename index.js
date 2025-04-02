@@ -143,6 +143,3 @@ app.delete('/users/:id',(req,res) => {
         res.status(200).json({message: 'user deleted successfully',data: users[userIndex]});
     }  
 })
-app.listen(9000,()=>{
-    console.log('Server is running on port 9000')
-});
