@@ -163,6 +163,10 @@ app.use(cors())
 // In-memory array for development/testing only
 // For production, use a proper database
 let users = [];
+app.get('/',async (req, res) => {
+  res.send("helo");
+
+})
 
 app.get('/getdata', async (req, res) => {
   res.json(users);
