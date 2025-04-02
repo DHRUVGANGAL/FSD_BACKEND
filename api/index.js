@@ -66,84 +66,150 @@
 
 
 
-const express = require('express')
+// const express = require('express')
 
+// const cors = require('cors')
+// const fs= require('fs/promises')
+// const app = express()
+// let users =[];
+// app.use(express.json())
+// app.use(cors())
+// console.log(users);
+// const readdata = async () => {
+//     try {
+//       const data = await fs.readFile('./data.json', 'utf8');
+//       // Check if the file is empty or only contains whitespace
+//       if (!data || data.trim() === '') {
+//         users = []; // Initialize with empty array if file is empty
+//       } else {
+//         users = JSON.parse(data);
+//       }
+//     } catch (error) {
+//       if (error.code === 'ENOENT') {
+//         // File doesn't exist yet, create it with an empty array
+//         await fs.writeFile('./data.json', JSON.stringify([]));
+//         users = [];
+//       } else {
+//         console.error('Error reading data file:', error);
+//         users = []; // Fallback to empty array
+//       }
+//     }
+//   };
+// const writedata=async ()=>{
+//    await fs.writeFile('./data.json',JSON.stringify(users))
+// }
+// readdata();
+// app.get('/getdata', async (req, res) => {
+//     res.json(users);
+// })
+// app.post('/users',(req,res)=>{
+//     const {name,age}=req.body;
+//     const newid=users.length>0?users[users.length-1].id+1:1;
+//     const newuser={id:newid,name,age};
+//     users.push(newuser);
+//     writedata();
+//     res.status(200).json({message: 'user register success',data: newuser});
+    
+// })
+// app.put('/users/:id/',(req,res) => {
+//     const uid=req.params.id;
+//     const {name,age}=req.body;
+//     const userIndex=users.findIndex(user=>user.id==uid);
+//     if(!name || !age) {
+//         res.status(400).json({message: 'name and age are required'});
+//         return;
+//     }
+//     if(userIndex==-1){
+//         console.log(userIndex)
+//         res.status(404).json({message: 'user not found'});
+//     }
+//     else{
+//         users[userIndex].name=name;
+//         users[userIndex].age=age;
+//         writedata();
+//         res.status(200).json({message: 'user updated successfully',data: users[userIndex]});
+//     }  
+// })
+
+// app.delete('/users/:id',(req,res) => {
+//     const uid=req.params.id;
+//     const userIndex=users.findIndex(user=>user.id==uid);
+//     if(userIndex==-1){
+//         res.status(404).json({message: 'user not found'});
+//     }
+//     else{
+//         users.splice(userIndex,1);
+//         writedata();
+//         res.status(200).json({message: 'user deleted successfully',data: users[userIndex]});
+//     }  
+// })
+
+// app.listen(3000);
+
+// module.exports = app;
+
+
+
+
+
+const express = require('express')
 const cors = require('cors')
-const fs= require('fs/promises')
+// Remove fs import since we can't use filesystem
+
 const app = express()
-let users =[];
 app.use(express.json())
 app.use(cors())
-console.log(users);
-const readdata = async () => {
-    try {
-      const data = await fs.readFile('./data.json', 'utf8');
-      // Check if the file is empty or only contains whitespace
-      if (!data || data.trim() === '') {
-        users = []; // Initialize with empty array if file is empty
-      } else {
-        users = JSON.parse(data);
-      }
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        // File doesn't exist yet, create it with an empty array
-        await fs.writeFile('./data.json', JSON.stringify([]));
-        users = [];
-      } else {
-        console.error('Error reading data file:', error);
-        users = []; // Fallback to empty array
-      }
-    }
-  };
-const writedata=async ()=>{
-   await fs.writeFile('./data.json',JSON.stringify(users))
-}
-readdata();
-app.get('/getdata', async (req, res) => {
-    res.json(users);
-})
-app.post('/users',(req,res)=>{
-    const {name,age}=req.body;
-    const newid=users.length>0?users[users.length-1].id+1:1;
-    const newuser={id:newid,name,age};
-    users.push(newuser);
-    writedata();
-    res.status(200).json({message: 'user register success',data: newuser});
-    
-})
-app.put('/users/:id/',(req,res) => {
-    const uid=req.params.id;
-    const {name,age}=req.body;
-    const userIndex=users.findIndex(user=>user.id==uid);
-    if(!name || !age) {
-        res.status(400).json({message: 'name and age are required'});
-        return;
-    }
-    if(userIndex==-1){
-        console.log(userIndex)
-        res.status(404).json({message: 'user not found'});
-    }
-    else{
-        users[userIndex].name=name;
-        users[userIndex].age=age;
-        writedata();
-        res.status(200).json({message: 'user updated successfully',data: users[userIndex]});
-    }  
+
+// In-memory array for development/testing only
+// For production, use a proper database
+let users = [];
+
+app.get('/api/getdata', async (req, res) => {
+  res.json(users);
 })
 
-app.delete('/users/:id',(req,res) => {
-    const uid=req.params.id;
-    const userIndex=users.findIndex(user=>user.id==uid);
-    if(userIndex==-1){
-        res.status(404).json({message: 'user not found'});
-    }
-    else{
-        users.splice(userIndex,1);
-        writedata();
-        res.status(200).json({message: 'user deleted successfully',data: users[userIndex]});
-    }  
+app.post('/api/users', (req, res) => {
+  const {name, age} = req.body;
+  const newid = users.length > 0 ? users[users.length-1].id+1 : 1;
+  const newuser = {id: newid, name, age};
+  users.push(newuser);
+  // No file writing
+  res.status(200).json({message: 'user register success', data: newuser});
 })
 
-app.listen(3000);
+app.put('/api/users/:id/', (req, res) => {
+  const uid = req.params.id;
+  const {name, age} = req.body;
+  const userIndex = users.findIndex(user => user.id == uid);
+  
+  if(!name || !age) {
+    return res.status(400).json({message: 'name and age are required'});
+  }
+  
+  if(userIndex == -1) {
+    return res.status(404).json({message: 'user not found'});
+  } 
+  
+  users[userIndex].name = name;
+  users[userIndex].age = age;
+  // No file writing
+  res.status(200).json({message: 'user updated successfully', data: users[userIndex]});
+})
 
+app.delete('/api/users/:id', (req, res) => {
+  const uid = req.params.id;
+  const userIndex = users.findIndex(user => user.id == uid);
+  
+  if(userIndex == -1) {
+    return res.status(404).json({message: 'user not found'});
+  }
+  
+  const deletedUser = users[userIndex];
+  users.splice(userIndex, 1);
+  // No file writing
+  res.status(200).json({message: 'user deleted successfully', data: deletedUser});
+})
+
+// Don't use app.listen for serverless
+// Instead, export the Express app
 module.exports = app;
