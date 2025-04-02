@@ -164,11 +164,11 @@ app.use(cors())
 // For production, use a proper database
 let users = [];
 
-app.get('/api/getdata', async (req, res) => {
+app.get('/getdata', async (req, res) => {
   res.json(users);
 })
 
-app.post('/api/users', (req, res) => {
+app.post('/users', (req, res) => {
   const {name, age} = req.body;
   const newid = users.length > 0 ? users[users.length-1].id+1 : 1;
   const newuser = {id: newid, name, age};
@@ -177,7 +177,7 @@ app.post('/api/users', (req, res) => {
   res.status(200).json({message: 'user register success', data: newuser});
 })
 
-app.put('/api/users/:id/', (req, res) => {
+app.put('/users/:id/', (req, res) => {
   const uid = req.params.id;
   const {name, age} = req.body;
   const userIndex = users.findIndex(user => user.id == uid);
@@ -196,7 +196,7 @@ app.put('/api/users/:id/', (req, res) => {
   res.status(200).json({message: 'user updated successfully', data: users[userIndex]});
 })
 
-app.delete('/api/users/:id', (req, res) => {
+app.delete('/users/:id', (req, res) => {
   const uid = req.params.id;
   const userIndex = users.findIndex(user => user.id == uid);
   
